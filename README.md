@@ -34,7 +34,7 @@ class LackAlert(BaseAlert):
 # monitor 用来注册handle
 ``` python
 
-monitor = Monitor()
+    monitor = Monitor()
     monitor.add_handle(CPUMonitHandle("cpu", 15, 10, AlertHandleClass=LackAlert, debug=True))
     monitor.add_handle(DiskMonitHandle("disk", 20, 25, AlertHandleClass=LackAlert, debug=True))
     try:
