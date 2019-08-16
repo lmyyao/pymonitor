@@ -13,6 +13,8 @@ class DiskMonitHandle(BaseHandle):
 
 ```
 # alert module
+
+用来自定义报警
 ``` python
 class LackAlert(BaseAlert):
     # 飞书报警
@@ -28,6 +30,16 @@ class LackAlert(BaseAlert):
 
 ```
 
-用来自定义报警
 
 # monitor 用来注册handle
+``` python
+
+monitor = Monitor()
+    monitor.add_handle(CPUMonitHandle("cpu", 15, 10, AlertHandleClass=LackAlert, debug=True))
+    monitor.add_handle(DiskMonitHandle("disk", 20, 25, AlertHandleClass=LackAlert, debug=True))
+    try:
+        monitor.run_forever()
+    except Exception as e:
+        monitor.close()
+
+```
