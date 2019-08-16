@@ -9,8 +9,6 @@ logging.basicConfig(
     '%(asctime)s %(filename)s %(levelname)s %(message)s',
     datefmt='%a, %d %b %Y %H:%M:%S')
 
-
-
 class Monitor(object):
     def __init__(self, max_worker=10, queue=None):
         self.handles = {}
