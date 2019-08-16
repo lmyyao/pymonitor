@@ -10,10 +10,6 @@ logging.basicConfig(
     datefmt='%a, %d %b %Y %H:%M:%S')
 
 
-def wrap_handle(handle, queue):
-    handle.run()
-    queue.put(handle.tag)
-
 
 class Monitor(object):
     def __init__(self, max_worker=10, queue=None):
@@ -31,12 +27,16 @@ class Monitor(object):
             return
         raise ValueError("handle class error")
 
+    def _wrap_handle(self, handle, queue):
+        handle.run()
+        queue.put(handle.tag)
+
     def submit_handles(self):
         for tag, handle in self.handles.items():
             self.submit_handle(tag, handle)
 
     def submit_handle(self, tag, handle):
-        p = self.executor.submit(wrap_handle, handle, self.queue)
+        p = self.executor.submit(self._wrap_handle, handle, self.queue)
         self.processes[tag] = p
         return p
 
