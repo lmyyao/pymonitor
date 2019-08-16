@@ -16,7 +16,7 @@ class BaseHandle(object):
                  period,
                  threshold,
                  AlertHandleClass=None,
-                 debug=False):
+                 debug=False, continuous_alert=5):
         self.tag = tag
         self.threshold = threshold
         self.period = period
@@ -25,14 +25,21 @@ class BaseHandle(object):
             self.alert_class = BaseAlert
         else:
             self.alert_class = AlertHandleClass
+        self.continuous_alert = continuous_alert
+        self.alert_count = 0
 
     def run(self):
         v = self.get_metric()
         if v > self.threshold:
-            self.alert(v)
+            if self.alert_count < self.continuous_alert:
+                self.alert(v)
+            else:
+                logging.debug(f"alert_count: {self.alert_count}")
+            self.alert_count += 1
         else:
             if self.debug:
                 logging.debug(f"{self.tag} current value: {v} less {self.threshold} ")
+            self.alert_count = 0
 
         self.sleep()
 
@@ -54,7 +61,6 @@ class BaseHandle(object):
     def do_alert(self, v):
         alert = self.alert_class(self, v)
         alert.do_alert()
-
 
 class CPUMonitHandle(BaseHandle):
     def get_metric(self):
